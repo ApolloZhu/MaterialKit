@@ -140,7 +140,6 @@ open class MKSwitch: UIControl {
             if let switchLayer = switchLayer {
                 switchLayer.onTouchUp(self.layer.convert(point, to: switchLayer))
             }
-        }
     }
 
     open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -206,6 +205,11 @@ open class MKSwitchLayer: CALayer {
         super.init()
         self.parent = parent
         setup()
+    }
+    
+    deinit {
+        shadowLayer?.cleanupObservers()
+        rippleLayer?.cleanupObservers()
     }
 
     required public init?(coder aDecoder: NSCoder) {

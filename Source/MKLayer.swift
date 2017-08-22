@@ -52,20 +52,20 @@ open class MKLayer: CALayer, CAAnimationDelegate {
     fileprivate override init(layer: Any) {
         super.init()
     }
-
+    
     public init(superLayer: CALayer) {
         super.init()
         self.superLayer = superLayer
         setup()
     }
-
+    
     public init(withView view: UIView) {
         super.init()
         self.superView = view
         self.superLayer = view.layer
         self.setup()
     }
-
+    
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.superLayer = self.superlayer
@@ -157,7 +157,7 @@ open class MKLayer: CALayer, CAAnimationDelegate {
             backgroundLayer.fillColor = color.withAlphaComponent(backgroundAlpha).cgColor
         }
     }
-
+    
     // MARK: Touches
 
     open func touchesBegan(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -177,23 +177,22 @@ open class MKLayer: CALayer, CAAnimationDelegate {
 
     open func touchesMoved(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
     }
-
+    
     // MARK: Private
-
     fileprivate func setup() {
         rippleLayer = CAShapeLayer()
         rippleLayer!.opacity = 0
         self.addSublayer(rippleLayer!)
-
+        
         backgroundLayer = CAShapeLayer()
         backgroundLayer!.opacity = 0
         backgroundLayer!.frame = superLayer!.bounds
         self.addSublayer(backgroundLayer!)
-
+        
         maskLayer = CAShapeLayer()
         self.setMaskLayerCornerRadius(superLayer!.cornerRadius)
         self.mask = maskLayer
-
+        
         self.frame = superLayer!.bounds
         superLayer!.addSublayer(self)
         superLayer!.addObserver(
@@ -206,7 +205,7 @@ open class MKLayer: CALayer, CAAnimationDelegate {
             forKeyPath: "cornerRadius",
             options: NSKeyValueObservingOptions(rawValue: 0),
             context: nil)
-
+        
         self.enableElevation()
         self.superLayerDidResize()
     }
@@ -234,18 +233,17 @@ open class MKLayer: CALayer, CAAnimationDelegate {
         }
         return CGPoint.zero
     }
-
     fileprivate func clearEffects() {
         if let rippleLayer = self.rippleLayer,
             let backgroundLayer = self.backgroundLayer {
             rippleLayer.timeOffset = 0
             rippleLayer.speed = 1
-
+            
             if rippleEnabled {
                 rippleLayer.removeAllAnimations()
                 backgroundLayer.removeAllAnimations()
                 self.removeAllAnimations()
-
+                
                 let opacityAnim = CABasicAnimation(keyPath: "opacity")
                 opacityAnim.fromValue = 1
                 opacityAnim.toValue = 0
@@ -268,14 +266,14 @@ open class MKLayer: CALayer, CAAnimationDelegate {
             let superLayer = self.superLayer {
             rippleLayer.removeAllAnimations()
             backgroundLayer.removeAllAnimations()
-
+            
             let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
             scaleAnim.fromValue = 0
             scaleAnim.toValue = 1
             scaleAnim.duration = rippleDuration
             scaleAnim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
             scaleAnim.delegate = self
-
+            
             let moveAnim = CABasicAnimation(keyPath: "position")
             moveAnim.fromValue = NSValue(cgPoint: touchLocation)
             moveAnim.toValue = NSValue(cgPoint: CGPoint(
@@ -283,7 +281,7 @@ open class MKLayer: CALayer, CAAnimationDelegate {
                 y: superLayer.bounds.midY))
             moveAnim.duration = rippleDuration
             moveAnim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
-
+            
             effectIsRunning = true
             rippleLayer.opacity = 1
             if backgroundAnimationEnabled {
@@ -291,7 +289,6 @@ open class MKLayer: CALayer, CAAnimationDelegate {
             } else {
                 backgroundLayer.opacity = 0
             }
-
             rippleLayer.add(moveAnim, forKey: "position")
             rippleLayer.add(scaleAnim, forKey: "scale")
         }
@@ -311,7 +308,7 @@ open class MKLayer: CALayer, CAAnimationDelegate {
                         powf(Float(superLayerHeight), 2)) * Float(rippleScaleRatio)
             let subX = center.x - CGFloat(circleDiameter) / 2
             let subY = center.y - CGFloat(circleDiameter) / 2
-
+            
             if let rippleLayer = self.rippleLayer {
                 rippleLayer.frame = CGRect(
                     x: subX, y: subY,

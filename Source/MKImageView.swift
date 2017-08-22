@@ -89,6 +89,10 @@ open class MKImageView: UIImageView
         super.init(image: image, highlightedImage: highlightedImage)
         setupLayer()
     }
+    
+    deinit {
+        mkLayer.cleanupObservers()
+    }
 
     deinit {
         mkLayer.recycle()

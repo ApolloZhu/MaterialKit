@@ -130,6 +130,10 @@ open class MKTextField : UITextField {
         super.init(coder: aDecoder)
         setupLayer()
     }
+    
+    deinit {
+        mkLayer.cleanupObservers()
+    }
 
     deinit {
         mkLayer.recycle()
